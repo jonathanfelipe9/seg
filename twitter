@@ -1,0 +1,47 @@
+from __future__ import absolute_import, print_function
+
+from tweepy.streaming import StreamListener
+from tweepy import OAuthHandler
+from tweepy import Stream
+import json
+
+class AssinanteTwitter(StreamListener):
+    Barcelona = 0
+    Juventus = 0
+    other = 0
+    def on_data(self, data):
+        conteudoJSON = json.loads(data)
+        tweet = conteudoJSON["text"]
+        print(tweet)
+
+        if tweet.find('Barcelona') != -1:
+            self.Barcelona = self.Barcelona + 1
+            print("barcelona=", self.Barcelona)
+        elif (tweet.find('juventus') != -1):
+            self.Juventus = self.Juventus + 1
+            print("juventus=", self.Juventus)
+        else:
+            self.other = self.other + 1
+        return True
+
+    def on_error(self, status):
+        print(status)
+
+
+
+print("Inicio do programa")
+consumer_key="5GEEdM2Qgxdfj6PHJz7g32WCB"
+consumer_secret="cP2KgHPk4kW3IenFKPcrdbsQkw3kj9TYV0KsEAfR933Iphk6Gn"
+
+access_token="403056021-8uXgWCu9bjAFO62XRgqd7eES0R0zkpPaNuwe7SXb"
+access_token_secret="VS47ftd1uxpAtEGdZhbU89q31ORiPX7Kfdu1sZcaEW5Qe"
+
+assinante = AssinanteTwitter()
+auth = OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+stream = Stream(auth, assinante)
+stream.filter(track=['juventus', 'barcelona'], languages=["pt"])
+
+
+
